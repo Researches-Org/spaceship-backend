@@ -14,4 +14,8 @@ public final class GameId extends Id {
                 "value=" + value +
                 '}';
     }
+
+    public static GameId random() {
+        return new GameId(UUID.randomUUID());
+    }
 }

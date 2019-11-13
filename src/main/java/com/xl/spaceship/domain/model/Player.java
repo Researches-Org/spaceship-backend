@@ -19,4 +19,8 @@ public final class Player {
     public PlayerId getId() {
         return id;
     }
+
+    public PlayerName getName() {
+        return name;
+    }
 }

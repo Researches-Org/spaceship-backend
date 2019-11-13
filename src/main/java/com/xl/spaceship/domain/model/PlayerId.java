@@ -14,4 +14,12 @@ public final class PlayerId extends Id {
                 "value=" + value +
                 '}';
     }
+
+    public static PlayerId random() {
+        return new PlayerId(UUID.randomUUID());
+    }
+
+    public static PlayerId of(String id) {
+        return new PlayerId(UUID.fromString(id));
+    }
 }
