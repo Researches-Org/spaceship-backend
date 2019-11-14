@@ -1,11 +1,15 @@
 package com.xl.spaceship.domain.model;
 
+import com.google.common.collect.Maps;
+import com.xl.spaceship.application.command.ReceiveSalvoCmd;
 import com.xl.spaceship.util.MatrixUtil;
 import com.xl.spaceship.util.RandomUtil;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public final class Board {
 
@@ -15,10 +19,19 @@ public final class Board {
 
     private static final char EMPTY = '.';
 
+    private static final char SHIP = '*';
+
+    private static final char MISSED_SHOT = '-';
+
+    private static final char HIT = 'X';
+
     private final char[][] value;
+
+    private final Map<Position, Spaceship> spaceships;
 
     private Board() {
         value = MatrixUtil.newMatrixWith(SIZE, EMPTY);
+        spaceships = Maps.newHashMap();
     }
 
     private Board addAtRandom(Spaceship spaceship) {
@@ -40,7 +53,16 @@ public final class Board {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                value[i + startRow][j + startColumn] = spaceship.get(i, j);
+                char c = spaceship.get(i, j);
+
+                int row = i + startRow;
+                int column = j + startColumn;
+
+                value[row][column] = c;
+
+                if (c == SHIP) {
+                    spaceships.put(new Position(row, column), spaceship);
+                }
             }
         }
 
@@ -69,5 +91,59 @@ public final class Board {
                 + System.lineSeparator()
                 + Arrays.stream(value).map(row -> Arrays.toString(row)).collect(Collectors.joining(System.lineSeparator()))
                 + '}';
+    }
+
+    public String[] toStringArray() {
+        return Arrays.stream(value)
+                .map(row -> new String(row))
+                .collect(Collectors.toList())
+                .toArray(new String[]{});
+    }
+
+    public boolean hasSpaceship() {
+       return !spaceships.isEmpty();
+    }
+
+    public Map<String, String> receiveSalvo(ReceiveSalvoCmd cmd) {
+        List<Salvo> response = Arrays.stream(cmd.getSalvo())
+                .map(salvo -> Position.fromSalvo(salvo))
+                .map(position -> receiveSalvoAtPosition(position))
+                .collect(Collectors.toList());
+
+        Map<String, String> map = Maps.newLinkedHashMap();
+
+        IntStream.range(0, response.size())
+                .forEach(i -> {
+                    Salvo s = response.get(i);
+                    map.put(s.getSalvo(), s.getResult());
+                });
+
+        return map;
+    }
+
+    private Salvo receiveSalvoAtPosition(Position position) {
+        int row = position.getRow();
+        int column = position.getColumn();
+
+        char currentValue = value[row][column];
+
+        if (currentValue == SHIP) {
+            Spaceship spaceship = spaceships.remove(position);
+
+            value[row][column] = HIT;
+
+            if (spaceships.containsValue(spaceship)) {
+                return Salvo.hit(position);
+            } else {
+                return Salvo.kill(position);
+            }
+        }
+
+        if (currentValue == EMPTY) {
+            value[row][column] = MISSED_SHOT;
+        }
+
+        return Salvo.miss(position);
+
     }
 }

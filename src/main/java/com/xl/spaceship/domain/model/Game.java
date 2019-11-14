@@ -1,6 +1,8 @@
 package com.xl.spaceship.domain.model;
 
 import com.google.common.collect.Maps;
+import com.xl.spaceship.application.command.ReceiveSalvoCmd;
+import com.xl.spaceship.query.model.SalvoResponseDto;
 import com.xl.spaceship.util.RandomUtil;
 
 import java.util.Map;
@@ -52,5 +54,32 @@ public final class Game {
 
     public PlayerId getWinner() {
         return winner;
+    }
+
+    public Board getBoard(PlayerId playerId) {
+        return boards.get(playerId);
+    }
+
+    public SalvoResponseDto receiveSalvo(ReceiveSalvoCmd cmd) {
+        if (playerTurn.equals(self)) {
+            throw new IllegalArgumentException("Cannot receive a salvo, it is your turn to send a salvo");
+        }
+
+        if (winner != null) {
+            return SalvoResponseDto.withWinner(winner.getValue().toString(), Salvo.misses(cmd.getSalvo()));
+        }
+
+        Board selfBoard = getBoard(self);
+
+        Map<String, String> salvoResponse = selfBoard.receiveSalvo(cmd);
+
+        if (selfBoard.hasSpaceship()) {
+            playerTurn = self;
+            return SalvoResponseDto.withPlayer(self.getValue().toString(), salvoResponse);
+        }
+
+        winner = opponent;
+
+        return SalvoResponseDto.withWinner(winner.getValue().toString(), salvoResponse);
     }
 }

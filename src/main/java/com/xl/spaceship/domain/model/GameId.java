@@ -18,4 +18,8 @@ public final class GameId extends Id {
     public static GameId random() {
         return new GameId(UUID.randomUUID());
     }
+
+    public static GameId of(String id) {
+        return new GameId(UUID.fromString(id));
+    }
 }
