@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
-public final class SalvoResponseWithPlayerTurnDto extends SalvoResponseDto {
+final class SalvoResponseWithPlayerTurnDto extends SalvoResponseDto {
 
     @JsonProperty("game")
     private final GamePlayerTurnDto gamePlayerTurnDto;
@@ -16,5 +16,15 @@ public final class SalvoResponseWithPlayerTurnDto extends SalvoResponseDto {
 
     public GamePlayerTurnDto getGamePlayerTurnDto() {
         return gamePlayerTurnDto;
+    }
+
+    @Override
+    public String getWinnerId() {
+        return null;
+    }
+
+    @Override
+    public String getPlayerTunerId() {
+        return gamePlayerTurnDto.getPlayerTurnId();
     }
 }

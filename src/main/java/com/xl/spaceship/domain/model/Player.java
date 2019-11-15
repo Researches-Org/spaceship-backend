@@ -6,14 +6,14 @@ public final class Player {
 
     private final PlayerId id;
 
-    private PlayerName name;
+    private final PlayerName name;
 
-    public Player(PlayerId id, PlayerName name) {
-        Objects.requireNonNull(id);
-        Objects.requireNonNull(name);
+    private final SpaceshipProtocol spaceshipProtocol;
 
-        this.id = id;
-        this.name = name;
+    public Player(PlayerId id, PlayerName name, SpaceshipProtocol spaceshipProtocol) {
+        this.id = Objects.requireNonNull(id);
+        this.name = Objects.requireNonNull(name);
+        this.spaceshipProtocol = Objects.requireNonNull(spaceshipProtocol);
     }
 
     public PlayerId getId() {
@@ -22,5 +22,9 @@ public final class Player {
 
     public PlayerName getName() {
         return name;
+    }
+
+    public SpaceshipProtocol getSpaceshipProtocol() {
+        return spaceshipProtocol;
     }
 }

@@ -11,7 +11,7 @@ public class PositionTest {
         Position position = new Position(13, 10);
 
         // SUT
-        String salvo = position.toSalvo();
+        String salvo = position.toShot();
 
         // assert
         Assertions.assertEquals("DxA", salvo);
@@ -24,7 +24,7 @@ public class PositionTest {
         Position expected = new Position(13, 10);
 
         // SUT
-        Position position = Position.fromSalvo("DxA");
+        Position position = Position.fromShot("DxA");
 
         // assert
         Assertions.assertEquals(expected, position);

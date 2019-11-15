@@ -69,7 +69,28 @@ public final class RandomUtil {
                 .boxed()
                 .reduce(spaceship, (s, i) -> s.rotateRight(), ((s1, s2) -> s2));
 
-
         return result;
+    }
+
+    public static List<Position> getEmptyPositionsAtRandom(char[][] value, int numOfPositions, char empty) {
+        List<Position> emptyPositions = MatrixUtil.getEmptyPositions(value, empty);
+
+        if (emptyPositions.size() <= numOfPositions) {
+            return emptyPositions;
+        }
+
+        List<Position> emptyPositionsAtRandom = Lists.newArrayList();
+
+        while (emptyPositionsAtRandom.size() < numOfPositions) {
+            int randomIndex = RANDOM.nextInt(emptyPositions.size());
+
+            Position emptyPosition = emptyPositions.get(randomIndex);
+
+            emptyPositionsAtRandom.add(emptyPosition);
+
+            emptyPositions.remove(randomIndex);
+        }
+
+        return emptyPositionsAtRandom;
     }
 }

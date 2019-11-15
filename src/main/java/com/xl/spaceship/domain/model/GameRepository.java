@@ -7,4 +7,6 @@ public interface GameRepository {
     Game getById(GameId gameId);
 
     void update(Game game);
+
+
 }

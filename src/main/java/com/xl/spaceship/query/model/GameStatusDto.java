@@ -4,18 +4,15 @@ import com.xl.spaceship.domain.model.Board;
 import com.xl.spaceship.domain.model.Game;
 import com.xl.spaceship.domain.model.PlayerId;
 
-public final class GameStatusDto {
+public abstract class GameStatusDto {
 
     private final PlayerBoardDto self;
 
     private final PlayerBoardDto opponent;
 
-    private final GamePlayerTurnDto game;
-
-    public GameStatusDto(PlayerBoardDto self, PlayerBoardDto opponent, GamePlayerTurnDto game) {
+    public GameStatusDto(PlayerBoardDto self, PlayerBoardDto opponent) {
         this.self = self;
         this.opponent = opponent;
-        this.game = game;
     }
 
     public PlayerBoardDto getSelf() {
@@ -24,10 +21,6 @@ public final class GameStatusDto {
 
     public PlayerBoardDto getOpponent() {
         return opponent;
-    }
-
-    public GamePlayerTurnDto getGame() {
-        return game;
     }
 
     public static GameStatusDto from(Game game) {
@@ -40,8 +33,10 @@ public final class GameStatusDto {
         PlayerBoardDto self = new PlayerBoardDto(selfId.getValue().toString(), selfBoard.toStringArray());
         PlayerBoardDto opponent = new PlayerBoardDto(opponentId.getValue().toString(), opponentBoard.toStringArray());
 
-        GamePlayerTurnDto gamePlayerTurnDto = new GamePlayerTurnDto(game.getPlayerTurn().getValue().toString());
-
-        return new GameStatusDto(self, opponent, gamePlayerTurnDto);
+        if (game.hasFinished()) {
+            return new GameStatusWithWinnerDto(self, opponent, new GameWinnerDto(game.getWinner().getValue().toString()));
+        } else {
+            return new GameStatusWithPlayerTurnDto(self, opponent, new GamePlayerTurnDto(game.getPlayerTurn().getValue().toString()));
+        }
     }
 }

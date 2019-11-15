@@ -91,6 +91,22 @@ public final class MatrixUtil {
         return emptyPositions;
     }
 
+    public static List<Position> getEmptyPositions(char[][] value, char empty) {
+        int m = value.length;
+        int n = value[0].length;
+
+        List<Position> emptyPositions = Lists.newArrayList();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (value[i][j] == empty) {
+                    emptyPositions.add(new Position(i, j));
+                }
+            }
+        }
+
+        return emptyPositions;
+    }
+
     public static void fill(char[][] value, char c) {
         int m = value.length;
 

@@ -1,12 +1,12 @@
 package com.xl.spaceship.application.command;
 
-public final class ReceiveSalvoCmd {
+public final class SalvoCmd {
 
     private String[] salvo;
 
-    public ReceiveSalvoCmd() { }
+    public SalvoCmd() { }
 
-    public ReceiveSalvoCmd(String[] salvo) {
+    public SalvoCmd(String[] salvo) {
         this.salvo = salvo;
     }
 

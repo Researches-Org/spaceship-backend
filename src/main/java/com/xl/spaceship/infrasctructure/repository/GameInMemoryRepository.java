@@ -1,4 +1,4 @@
-package com.xl.spaceship.infrasctructure;
+package com.xl.spaceship.infrasctructure.repository;
 
 import com.xl.spaceship.domain.model.Game;
 import com.xl.spaceship.domain.model.GameId;
@@ -27,5 +27,6 @@ final class GameInMemoryRepository implements GameRepository {
     public void update(Game game) {
        games.put(game.getId(), game);
     }
+
 
 }

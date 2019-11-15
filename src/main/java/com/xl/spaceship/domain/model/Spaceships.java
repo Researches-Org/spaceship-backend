@@ -1,8 +1,8 @@
 package com.xl.spaceship.domain.model;
 
-public final class SpaceShips {
+public final class Spaceships {
 
-    private SpaceShips() {}
+    private Spaceships() {}
 
     public static Angle angle() {
         return new Angle();

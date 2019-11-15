@@ -13,12 +13,12 @@ public final class Position {
         this.column = column;
     }
 
-    public static Position fromSalvo(String salvo) {
-        String[] salvoSplit = salvo.split("x");
+    public static Position fromShot(String shot) {
+        String[] shotSplit = shot.split("x");
 
         return new Position(
-                Integer.valueOf(salvoSplit[0], 16),
-                Integer.valueOf(salvoSplit[1], 16));
+                Integer.valueOf(shotSplit[0], 16),
+                Integer.valueOf(shotSplit[1], 16));
     }
 
     public int getRow() {
@@ -51,7 +51,7 @@ public final class Position {
                 '}';
     }
 
-    public String toSalvo() {
+    public String toShot() {
         return String.format("%sx%s", Integer.toHexString(row).toUpperCase(), Integer.toHexString(column).toUpperCase());
     }
 }

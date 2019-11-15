@@ -1,7 +1,8 @@
 package com.xl.spaceship.domain.model;
 
 import com.google.common.collect.Maps;
-import com.xl.spaceship.application.command.ReceiveSalvoCmd;
+import com.google.common.collect.Sets;
+import com.xl.spaceship.application.command.SalvoCmd;
 import com.xl.spaceship.util.MatrixUtil;
 import com.xl.spaceship.util.RandomUtil;
 
@@ -74,7 +75,7 @@ public final class Board {
     }
 
     public static Board random() {
-        List<Spaceship> spaceships = RandomUtil.shuffle(SpaceShips.all());
+        List<Spaceship> spaceships = RandomUtil.shuffle(Spaceships.all());
 
         Board result = spaceships.stream().reduce(Board.empty(),
                 (board, spaceship) -> board.addAtRandom(RandomUtil.rotateAtMax(spaceship, MAX_ROTATIONS)),
@@ -104,24 +105,24 @@ public final class Board {
        return !spaceships.isEmpty();
     }
 
-    public Map<String, String> receiveSalvo(ReceiveSalvoCmd cmd) {
-        List<Salvo> response = Arrays.stream(cmd.getSalvo())
-                .map(salvo -> Position.fromSalvo(salvo))
-                .map(position -> receiveSalvoAtPosition(position))
+    public Map<String, String> receiveSalvo(SalvoCmd cmd) {
+        List<Shot> response = Arrays.stream(cmd.getSalvo())
+                .map(salvo -> Position.fromShot(salvo))
+                .map(position -> receiveShotAtPosition(position))
                 .collect(Collectors.toList());
 
         Map<String, String> map = Maps.newLinkedHashMap();
 
         IntStream.range(0, response.size())
                 .forEach(i -> {
-                    Salvo s = response.get(i);
-                    map.put(s.getSalvo(), s.getResult());
+                    Shot s = response.get(i);
+                    map.put(s.getShot(), s.getResult());
                 });
 
         return map;
     }
 
-    private Salvo receiveSalvoAtPosition(Position position) {
+    private Shot receiveShotAtPosition(Position position) {
         int row = position.getRow();
         int column = position.getColumn();
 
@@ -133,17 +134,47 @@ public final class Board {
             value[row][column] = HIT;
 
             if (spaceships.containsValue(spaceship)) {
-                return Salvo.hit(position);
+                return Shot.hit(position);
             } else {
-                return Salvo.kill(position);
+                return Shot.kill(position);
             }
-        }
-
-        if (currentValue == EMPTY) {
+        } else if (currentValue == EMPTY) {
             value[row][column] = MISSED_SHOT;
         }
 
-        return Salvo.miss(position);
+        return Shot.miss(position);
 
+    }
+
+    public void update(Shot shot) {
+        Position position = Position.fromShot(shot.getShot());
+
+        int row = position.getRow();
+        int column = position.getColumn();
+
+        char c = value[row][column];
+
+        if (shot.isHit() || shot.isKill()) {
+            value[row][column] = HIT;
+        }
+        else if (shot.isMiss() && c == EMPTY) {
+            value[row][column] = MISSED_SHOT;
+        }
+
+    }
+
+    public int getTotalSpaceships() {
+        return Sets.newHashSet(spaceships.values()).size();
+    }
+
+    public SalvoCmd generateRandomSalvo(int shots) {
+        List<Position> positions = RandomUtil.getEmptyPositionsAtRandom(value, shots, EMPTY);
+
+        String[] salvo = positions.stream()
+                .map(p -> p.toShot())
+                .collect(Collectors.toList())
+                .toArray(new String[] {});
+
+        return new SalvoCmd(salvo);
     }
 }

@@ -5,15 +5,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public final class GameCreatedDto {
 
     @JsonProperty("user_id")
-    private final String userId;
+    private String userId;
 
     @JsonProperty("full_name")
-    private final String fullName;
+    private String fullName;
 
     @JsonProperty("game_id")
-    private final String gameId;
+    private String gameId;
 
-    private final String starting;
+    private String starting;
+
+    public GameCreatedDto() {}
 
     public GameCreatedDto(String userId, String fullName, String gameId, String starting) {
         this.userId = userId;

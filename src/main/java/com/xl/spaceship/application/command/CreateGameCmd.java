@@ -13,6 +13,14 @@ public final class CreateGameCmd {
     @JsonProperty("spaceship_protocol")
     private SpaceshipProtocolCmd spaceshipProtocol;
 
+    public CreateGameCmd() {}
+
+    public CreateGameCmd(String userId, String fullName, SpaceshipProtocolCmd spaceshipProtocol) {
+        this.userId = userId;
+        this.fullName = fullName;
+        this.spaceshipProtocol = spaceshipProtocol;
+    }
+
     public String getUserId() {
         return userId;
     }
