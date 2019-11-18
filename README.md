@@ -28,7 +28,7 @@ The backend uses the following runtime properties:
 
 2. Optionally, you can use java directly to run the executable jar:
 ```
-java -Dsever.port=8081 -Dhostname=127.0.0.1 -Dplayer.name="Manoel Menezes" -jar ./target/spaceship-0.0.1-SNAPSHOT.jar
+java -Dserver.port=8081 -Dhostname=127.0.0.1 -Dplayer.name="Manoel Menezes" -jar ./target/spaceship-0.0.1-SNAPSHOT.jar
 ```
 
 ## Improvements
