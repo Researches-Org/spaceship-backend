@@ -1,14 +1,18 @@
 package com.xl.spaceship.query.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
 
+@JsonDeserialize(using = SalvoResponseDtoDeserializer.class)
 public abstract class SalvoResponseDto {
 
-    private final Map<String, String> salvo;
+    private Map<String, String> salvo;
 
     private boolean gameHadFinished;
+
+    public SalvoResponseDto() {}
 
     public SalvoResponseDto(Map<String, String> salvo) {
         this.salvo = Maps.newLinkedHashMap(salvo);
@@ -27,7 +31,7 @@ public abstract class SalvoResponseDto {
         return new SalvoResponseWithWinnerDto(new GameWinnerDto(winnerId), salvoResponse);
     }
 
-    public static SalvoResponseDto withWinnerWhenGameHadFinised(String winnerId, Map<String, String> salvoResponse) {
+    public static SalvoResponseDto withWinnerWhenGameHadFinished(String winnerId, Map<String, String> salvoResponse) {
         return new SalvoResponseWithWinnerDto(new GameWinnerDto(winnerId), salvoResponse, true);
     }
 

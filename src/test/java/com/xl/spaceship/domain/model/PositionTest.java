@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class PositionTest {
 
     @Test
-    public void testToSalvo() {
+    public void testToShot() {
         // set up
         Position position = new Position(13, 10);
 
@@ -19,7 +19,7 @@ public class PositionTest {
     }
 
     @Test
-    public void testFromSalvo() {
+    public void testFromShot() {
         // set up
         Position expected = new Position(13, 10);
 
@@ -28,7 +28,6 @@ public class PositionTest {
 
         // assert
         Assertions.assertEquals(expected, position);
-
 
     }
 

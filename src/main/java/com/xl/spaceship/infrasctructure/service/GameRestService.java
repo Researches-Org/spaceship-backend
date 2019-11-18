@@ -31,7 +31,7 @@ final class GameRestService implements GameHttpService {
         String hostname = spaceshipProtocol.getHostname();
         int port = spaceshipProtocol.getPort();
 
-        String url = String.format("http://%s:%d/xl-spaceship/protocol/game/%s", hostname, port, game.getId());
+        String url = String.format("http://%s:%d/xl-spaceship/protocol/game/%s", hostname, port, game.getId().getValue().toString());
 
         HttpEntity<SalvoCmd> requestEntity = new HttpEntity<>(cmd);
 

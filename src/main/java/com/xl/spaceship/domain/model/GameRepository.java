@@ -1,5 +1,9 @@
 package com.xl.spaceship.domain.model;
 
+import com.xl.spaceship.query.model.GameDto;
+
+import java.util.List;
+
 public interface GameRepository {
 
     void add(Game game);
@@ -8,5 +12,5 @@ public interface GameRepository {
 
     void update(Game game);
 
-
+    List<GameDto> getGames();
 }

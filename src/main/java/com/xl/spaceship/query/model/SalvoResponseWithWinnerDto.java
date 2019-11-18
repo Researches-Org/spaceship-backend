@@ -7,7 +7,9 @@ import java.util.Map;
 final class SalvoResponseWithWinnerDto extends SalvoResponseDto {
 
     @JsonProperty("game")
-    private final GameWinnerDto gameWinnerDto;
+    private GameWinnerDto gameWinnerDto;
+
+    public SalvoResponseWithWinnerDto() {}
 
     public SalvoResponseWithWinnerDto(GameWinnerDto gameWinnerDto, Map<String, String> salvo) {
         super(salvo);

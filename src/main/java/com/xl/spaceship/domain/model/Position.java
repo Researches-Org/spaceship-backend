@@ -1,5 +1,7 @@
 package com.xl.spaceship.domain.model;
 
+import com.google.common.base.Preconditions;
+
 import java.util.Objects;
 
 public final class Position {
@@ -9,6 +11,9 @@ public final class Position {
     private final int column;
 
     public Position(int row, int column) {
+        Preconditions.checkArgument(row >= 0 && row < Board.SIZE);
+        Preconditions.checkArgument(column >= 0 && column < Board.SIZE);
+
         this.row = row;
         this.column = column;
     }

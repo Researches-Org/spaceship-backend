@@ -7,7 +7,9 @@ import java.util.Map;
 final class SalvoResponseWithPlayerTurnDto extends SalvoResponseDto {
 
     @JsonProperty("game")
-    private final GamePlayerTurnDto gamePlayerTurnDto;
+    private GamePlayerTurnDto gamePlayerTurnDto;
+
+    public SalvoResponseWithPlayerTurnDto() {}
 
     public SalvoResponseWithPlayerTurnDto(GamePlayerTurnDto gamePlayerTurnDto, Map<String, String> salvo) {
         super(salvo);

@@ -24,6 +24,11 @@ public final class SalvoReceivedHandler implements DomainEventHandler<SalvoRecei
     @Subscribe
     @Override
     public void handle(SalvoReceivedEvent salvoReceivedEvent) {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Game game = gameRepository.getById(salvoReceivedEvent.getGameId());
 
         SalvoCmd cmd = game.generateRandomSalvo();

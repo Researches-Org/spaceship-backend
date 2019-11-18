@@ -16,12 +16,19 @@ import com.xl.spaceship.domain.model.SalvoReceivedEvent;
 import com.xl.spaceship.domain.model.SpaceshipProtocol;
 import com.xl.spaceship.infrasctructure.event.EventBus;
 import com.xl.spaceship.query.model.GameCreatedDto;
+import com.xl.spaceship.query.model.GameDto;
 import com.xl.spaceship.query.model.GameStatusDto;
 import com.xl.spaceship.query.model.SalvoResponseDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public final class GameApplicationService {
+
+    private static final Logger logger = LoggerFactory.getLogger(GameApplicationService.class);
 
     private final GameRepository gameRepository;
 
@@ -86,6 +93,8 @@ public final class GameApplicationService {
     public SalvoResponseDto sendSalvo(GameId gameId, SalvoCmd cmd) {
         Game game = gameRepository.getById(gameId);
 
+        game.validateSendSalvoCmd(cmd);
+
         SalvoResponseDto salvoResponseDto = gameHttpService.sendSalvo(game, cmd);
 
         game.updateOpponentBoard(salvoResponseDto);
@@ -108,8 +117,7 @@ public final class GameApplicationService {
         try {
             gameCreatedDto = gameHttpService.challenge(createGameCmd, cmd);
         } catch (Exception e) {
-            // TODO: log
-            e.printStackTrace();
+            logger.error("Error when challenging another instance", e);
         }
 
         if (gameCreatedDto != null) {
@@ -121,11 +129,13 @@ public final class GameApplicationService {
                     cmd.getSpaceshipProtocolCmd().getHostname(),
                     cmd.getSpaceshipProtocolCmd().getPort());
 
+            PlayerId playerTurn = PlayerId.of(gameCreatedDto.getStarting());
+
             Player opponent = new Player(opponentId, opponentName, opponentSpaceshipProtocol);
 
             playerRepository.add(opponent);
 
-            Game game = new Game(gameId, self.getId(), self.getSpaceshipProtocol(), opponentId, opponentSpaceshipProtocol);
+            Game game = new Game(gameId, self.getId(), self.getSpaceshipProtocol(), opponentId, opponentSpaceshipProtocol, playerTurn);
 
             gameRepository.add(game);
         }
@@ -139,4 +149,7 @@ public final class GameApplicationService {
         game.enableAutopilot();
     }
 
+    public List<GameDto> getGames() {
+        return gameRepository.getGames();
+    }
 }

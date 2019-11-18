@@ -1,9 +1,11 @@
 package com.xl.spaceship.domain.model;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 public final class Shot {
 
@@ -20,6 +22,10 @@ public final class Shot {
     private Shot(String shot, String result) {
         this.shot = shot;
         this.result = result;
+    }
+
+    public static Set<String> validResults() {
+        return Sets.newHashSet(KILL, MISS, HIT);
     }
 
     public static Shot of(String shot, String result) {

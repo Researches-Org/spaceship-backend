@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 
 public final class Board {
 
-    private static final int SIZE = 16;
+    protected static final int SIZE = 16;
 
     private static final int MAX_ROTATIONS = 3;
 
@@ -24,7 +24,7 @@ public final class Board {
 
     private static final char MISSED_SHOT = '-';
 
-    private static final char HIT = 'X';
+    protected static final char HIT = 'X';
 
     private final char[][] value;
 
@@ -70,11 +70,11 @@ public final class Board {
         return this;
     }
 
-    public static Board empty() {
+    protected static Board empty() {
         return new Board();
     }
 
-    public static Board random() {
+    protected static Board random() {
         List<Spaceship> spaceships = RandomUtil.shuffle(Spaceships.all());
 
         Board result = spaceships.stream().reduce(Board.empty(),
@@ -101,13 +101,13 @@ public final class Board {
                 .toArray(new String[]{});
     }
 
-    public boolean hasSpaceship() {
+    protected boolean hasSpaceship() {
        return !spaceships.isEmpty();
     }
 
-    public Map<String, String> receiveSalvo(SalvoCmd cmd) {
+    protected Map<String, String> receiveSalvo(SalvoCmd cmd) {
         List<Shot> response = Arrays.stream(cmd.getSalvo())
-                .map(salvo -> Position.fromShot(salvo))
+                .map(shot -> Position.fromShot(shot))
                 .map(position -> receiveShotAtPosition(position))
                 .collect(Collectors.toList());
 
@@ -146,7 +146,7 @@ public final class Board {
 
     }
 
-    public void update(Shot shot) {
+    protected void update(Shot shot) {
         Position position = Position.fromShot(shot.getShot());
 
         int row = position.getRow();
@@ -167,7 +167,7 @@ public final class Board {
         return Sets.newHashSet(spaceships.values()).size();
     }
 
-    public SalvoCmd generateRandomSalvo(int shots) {
+    protected SalvoCmd generateRandomSalvo(int shots) {
         List<Position> positions = RandomUtil.getEmptyPositionsAtRandom(value, shots, EMPTY);
 
         String[] salvo = positions.stream()

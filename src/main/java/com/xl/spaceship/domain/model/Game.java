@@ -31,6 +31,15 @@ public final class Game {
                 SpaceshipProtocol selfSpaceshipProtocol,
                 PlayerId opponent,
                 SpaceshipProtocol opponentSpaceshipProtocol) {
+        this(id, self, selfSpaceshipProtocol, opponent, opponentSpaceshipProtocol, RandomUtil.chooseAtRandom(new PlayerId[] { self, opponent }));
+    }
+
+    public Game(GameId id,
+                PlayerId self,
+                SpaceshipProtocol selfSpaceshipProtocol,
+                PlayerId opponent,
+                SpaceshipProtocol opponentSpaceshipProtocol,
+                PlayerId playerTurn) {
         this.id = Objects.requireNonNull(id);
         this.self = Objects.requireNonNull(self);
         this.opponent = Objects.requireNonNull(opponent);
@@ -44,7 +53,7 @@ public final class Game {
         this.boards = Maps.newHashMap();
         this.boards.put(self, Board.random());
         this.boards.put(opponent, Board.empty());
-        this.playerTurn = RandomUtil.chooseAtRandom(new PlayerId[] { self, opponent });
+        this.playerTurn = playerTurn;
     }
 
     public GameId getId() {
@@ -75,13 +84,17 @@ public final class Game {
         return boards.get(playerId);
     }
 
+    public Board getSelfBoard() {
+        return getBoard(getSelf());
+    }
+
     public SalvoResponseDto receiveSalvo(SalvoCmd cmd) {
         if (playerTurn.equals(self)) {
             throw new IllegalArgumentException("Cannot receive a salvo, it is your turn to send a salvo");
         }
 
         if (hasFinished()) {
-            return SalvoResponseDto.withWinnerWhenGameHadFinised(winner.getValue().toString(), Shot.misses(cmd.getSalvo()));
+            return SalvoResponseDto.withWinnerWhenGameHadFinished(winner.getValue().toString(), Shot.misses(cmd.getSalvo()));
         }
 
         Board selfBoard = getBoard(self);
@@ -124,6 +137,7 @@ public final class Game {
     }
 
     public void enableAutopilot() {
+        ensureGameNotFinished();
         autopilot = true;
     }
 
@@ -143,5 +157,23 @@ public final class Game {
         Board opponentBoard = boards.get(opponent);
 
         return opponentBoard.generateRandomSalvo(totalSpaceships);
+    }
+
+    public void validateSendSalvoCmd(SalvoCmd cmd) {
+        ensureGameNotFinished();
+
+        if (cmd.getSalvo().length > getSelfBoard().getTotalSpaceships()) {
+            throw new IllegalArgumentException("Number of shots cannot exceed number of ships");
+        }
+
+        if (!playerTurn.equals(self)) {
+            throw new IllegalStateException("It is not your turn to send a salvo");
+        }
+    }
+
+    private void ensureGameNotFinished() {
+        if (hasFinished()) {
+            throw new IllegalStateException("Game has already finished");
+        }
     }
 }

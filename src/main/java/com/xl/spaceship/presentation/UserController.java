@@ -5,6 +5,7 @@ import com.xl.spaceship.application.command.ChallengeCmd;
 import com.xl.spaceship.application.command.SalvoCmd;
 import com.xl.spaceship.domain.model.GameId;
 import com.xl.spaceship.query.model.GameCreatedDto;
+import com.xl.spaceship.query.model.GameDto;
 import com.xl.spaceship.query.model.GameStatusDto;
 import com.xl.spaceship.query.model.SalvoResponseDto;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/xl-spaceship/user")
@@ -28,6 +30,13 @@ public final class UserController {
 
     public UserController(GameApplicationService gameApplicationService) {
         this.gameApplicationService = gameApplicationService;
+    }
+
+    @GetMapping("/game")
+    public ResponseEntity<List<GameDto>> getGames() {
+        List<GameDto> games = gameApplicationService.getGames();
+
+        return ResponseEntity.ok(games);
     }
 
     @GetMapping("/game/{gameId}")
@@ -57,7 +66,7 @@ public final class UserController {
                     .location(URI.create(uri))
                     .body("A new game has been created at " + uri);
         } else {
-            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body("");
         }
 
         return responseEntity;
